@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI RinoSim </title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-logo">AI RinoSim </div>
+        <ul class="navbar-links">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#how-it-works">Cómo Funciona</a></li>
+            <li><a href="#upload">Subir Fotos</a></li>
+            <li><a href="#contact">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero" id="home">
+        <div class="hero-content">
+            <h1>Simula los Efectos de una Rinoplastia con IA</h1>
+            <p>Sube tu foto y ve los resultados en segundos</p>
+            <button onclick="location.href='#upload'">Prueba Ahora</button>
+        </div>
+        <div class="hero-image">
+            <div class="img-comp-container">
+                <div class="img-comp-img">
+                    <img src="ejemplo.png" alt="Después">
+                </div>
+                <div class="img-comp-img img-comp-overlay">
+                    <img src="antes.png" alt="Antes">
+                </div>
+               
+                <div class="img-comp-slider"></div>
+            </div>
+        </div>
+    </header>
+
+    <section class="how-it-works" id="how-it-works">
+        <h2>Cómo Funciona</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-icon">1</div>
+                <p>Sube una foto del perfil de tu cara.</p>
+                <p>Para que los resultados sean óptimos, es importante que la foto sea de alta calidad y con un fondo blanco. </p>
+                <p>Ejemplo de foto que debes subir:</p>
+                <img src="ejemplo.png" alt="Foto de ejemplo:" class="step-image">
+            </div>
+            <div class="step">
+                <div class="step-icon">2</div>
+                <p>Ver los resultados generados por IA en segundos.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="upload" id="upload">
+        <h2>Sube tu Foto</h2>
+        <div class="upload-form">
+            <input type="file" id="fileInput">
+            <button onclick="uploadPhoto()">Ver Resultados</button>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <h2>Contacto</h2>
+        <form>
+            <label>Nombre</label>
+            <input type="text" name="name">
+            <label>Correo Electrónico</label>
+            <input type="email" name="email">
+            <label>Mensaje</label>
+            <textarea name="message"></textarea>
+            <button type="submit">Enviar</button>
+        </form>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 AI RinoSim . Todos los derechos reservados.</p>
+            <ul class="footer-links">
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#how-it-works">Cómo Funciona</a></li>
+                <li><a href="#upload">Subir Fotos</a></li>
+                <li><a href="#contact">Contacto</a></li>
+            </ul>
+        </div>
+        <div class="footer-social">
+            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a>
+            <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
