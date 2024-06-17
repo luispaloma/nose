@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI RinoSim</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        #waitMessage {
+            display: none;
+            font-size: 16px;
+            color: #333;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-logo">AI RinoSim</div>
+        <ul class="navbar-links">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#how-it-works">Cómo Funciona</a></li>
+            <li><a href="#upload">Subir Fotos</a></li>
+            <li><a href="#contact">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero" id="home">
+        <div class="hero-content">
+            <h1>Simula los Efectos de una Rinoplastia con IA</h1>
+            <p>Sube tu foto y ve los resultados en segundos</p>
+            <button onclick="location.href='#how-it-works'">Prueba Ahora</button>
+        </div>
+        <div class="hero-image">
+            <div class="img-comp-container">
+                <div class="img-comp-img">
+                    <img src="ejemplo.png" alt="Después">
+                </div>
+                <div class="img-comp-img img-comp-overlay">
+                    <img src="antes.png" alt="Antes">
+                </div>
+                <div class="img-comp-slider"></div>
+            </div>
+        </div>
+    </header>
+
+    <section class="how-it-works" id="how-it-works">
+        <h2>Cómo Funciona</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-icon">1</div>
+                <p>Sube una foto del perfil de tu cara.</p>
+                <p>Para que los resultados sean óptimos, es importante que la foto sea de alta calidad y con un fondo blanco.</p>
+                <p>Ejemplo de foto que debes subir:</p>
+                <img src="antes.png" alt="Foto de ejemplo:" class="step-image">
+            </div>
+            <div class="step">
+                <div class="step-icon">2</div>
+                <p>Dibujar en la imagen la nariz, de forma que quede completamente en rojo.</p>
+                <p>Ejemplo a continuación:</p>
+                <img src="mascara_ejemplo.png" alt="Foto de ejemplo:" class="step-image">
+            </div>
+            <div class="step">
+                <div class="step-icon">3</div>
+                <p>Ver los resultados generados por IA en segundos.</p>
+                <img src="ejemplo.png" alt="Foto de ejemplo:" class="step-image">
+            </div>
+        </div>
+    </section>
+
+    <section class="upload" id="upload">
+        <h2>Sube tu Foto</h2>
+        <div class="upload-form">
+            <input type="file" id="fileInput">
+            <canvas id="canvas" width="540" height="540" style="display: none;"></canvas>
+            <div id="waitMessage">Esto suele durar unos segundos, por favor, espere...</div>
+            <button id="uploadButton">Ver Resultados</button>
+        </div>
+        
+    </section>
+
+    <section class="contact" id="contact">
+        <h2>Contacto</h2>
+        <form>
+            <label>Nombre</label>
+            <input type="text" name="name">
+            <label>Correo Electrónico</label>
+            <input type="email" name="email">
+            <label>Mensaje</label>
+            <textarea name="message"></textarea>
+            <button type="submit">Enviar</button>
+        </form>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 AI RinoSim. Todos los derechos reservados.</p>
+            <ul class="footer-links">
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#how-it-works">Cómo Funciona</a></li>
+                <li><a href="#upload">Subir Fotos</a></li>
+                <li><a href="#contact">Contacto</a></li>
+            </ul>
+        </div>
+        <div class="footer-social">
+            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a>
+            <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const upload = document.getElementById('fileInput');
+        const uploadButton = document.getElementById('uploadButton');
+        const waitMessage = document.getElementById('waitMessage');
+
+        let drawing = false;
+        let img = new Image();
+        let originalWidth, originalHeight;
+
+        // Crear una segunda capa para la máscara
+        const maskCanvas = document.createElement('canvas');
+        const maskCtx = maskCanvas.getContext('2d');
+
+        const displayWidth = 540;
+        const displayHeight = 540;
+
+        upload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                img = new Image();
+                img.onload = () => {
+                    originalWidth = img.width;
+                    originalHeight = img.height;
+
+                    // Configurar el tamaño del lienzo de la máscara
+                    maskCanvas.width = originalWidth;
+                    maskCanvas.height = originalHeight;
+
+                    // Redimensionar la imagen para mostrarla en 540x540
+                    const scale = Math.min(displayWidth / originalWidth, displayHeight / originalHeight);
+                    const scaledWidth = originalWidth * scale;
+                    const scaledHeight = originalHeight * scale;
+                    canvas.width = scaledWidth;
+                    canvas.height = scaledHeight;
+                    ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+                    canvas.style.display = 'block';
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        });
+
+        canvas.addEventListener('mousedown', (e) => {
+            drawing = true;
+            draw(e);
+        });
+
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', () => drawing = false);
+        canvas.addEventListener('mouseout', () => drawing = false);
+
+        function draw(e) {
+            if (!drawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Color rojo semi-transparente para visualización
+            ctx.beginPath();
+            ctx.arc(x, y, 25, 0, Math.PI * 2); // Ajustar el radio
+            ctx.fill();
+
+            // Ajustar las coordenadas a la escala original
+            const scaleX = originalWidth / canvas.width;
+            const scaleY = originalHeight / canvas.height;
+            const originalX = x * scaleX;
+            const originalY = y * scaleY;
+
+            maskCtx.fillStyle = 'rgba(255, 255, 255, 1)'; // Color blanco opaco para la máscara
+            maskCtx.beginPath();
+            maskCtx.arc(originalX, originalY, 25 * scaleX, 0, Math.PI * 2); // Ajustar el radio a la escala original
+            maskCtx.fill();
+        }
+
+        uploadButton.addEventListener('click', () => {
+            // Mostrar mensaje de espera y ocultar el lienzo
+            canvas.style.display = 'none';
+            waitMessage.style.display = 'block';
+            document.getElementById('uploadButton').disabled = true;
+
+            // Descargar la máscara
+            const link = document.createElement('a');
+            link.download = 'mask.png';
+            link.href = maskCanvas.toDataURL();
+            link.click();
+        });
+    </script>
+</body>
+</html>
